@@ -1,19 +1,45 @@
 {
-  "id": "cmpl-7XHoNOMdjCBIBH3mt6Zh62mgys8j5",
-  "object": "text_completion",
-  "created": 1688167647,
-  "model": "text-davinci-003",
-  "choices": [
-    {
-      "text": "\n\n{\n  \"class\": \"AS3\",\n  \"action\": \"deploy\",\n  \"declaration\": {\n    \"class\": \"ADC\",\n    \"schemaVersion\": \"3.10.0\",\n    \"id\": \"http_app\",\n    \"remark\": \"HTTP App AS3 Declaration\",\n    \"HTTP\": {\n      \"class\": \"HTTP\",\n      \"virtualServers\": [\n        {\n          \"name\": \"http-vs\",\n          \"address\": \"10.0.0.2\",\n          \"port\": 80,\n          \"pool\": \"/Common/http-pool\"\n        }\n      ],\n      \"profiles\": [\n        {\n          \"name\": \"profile-http\",\n          \"class\": \"Profile_HTTP\",\n          \"fallbackHost\": false,\n          \"processAccounting\": true,\n          \"setToken\": false\n        }\n      ]\n    },\n    \"Pools\": {\n      \"class\": \"Pools\",\n      \"pools\": [\n        {\n          \"name\": \"http-pool\",\n          \"loadBalancingMode\": \"round-robin\",\n          \"monitor\": \"/Common/http\"\n        }\n      ]\n    }\n  }\n}",
-      "index": 0,
-      "logprobs": null,
-      "finish_reason": "stop"
-    }
-  ],
-  "usage": {
-    "prompt_tokens": 11,
-    "completion_tokens": 286,
-    "total_tokens": 297
-  }
+  "action": "deploy",
+  "class": "AS3",
+  "declaration": {
+    "class": "ADC",
+    "id": "adcDeclaration_12345",
+    "label": "httpApp",
+    "remarks": "Example F5 BIG-IP Application Services 3 (AS3) declaration for an HTTP application.",
+    "schemaVersion": "3.14.0",
+    "template": {
+      "class": "Template",
+      "httpProfiles": [
+        {
+          "class": "HTTPProfile",
+          "idleTimeout": 3600,
+          "name": "http_profile_12345"
+        }
+      ],
+      "httpServices": [
+        {
+          "class": "HTTPService",
+          "name": "http_service_12345",
+          "persistenceMethods": [
+            {
+              "class": "ClientSourceAddress",
+              "matchForward": "enabled"
+            }
+          ],
+          "profiles": [
+            {
+              "class": "ProfileContext",
+              "profile": "http_profile_12345"
+            }
+          ],
+          "virtualAddresses": [
+            "1.1.1.1"
+          ],
+          "virtualPort": 80
+        }
+      ]
+    },
+    "templateVersion": "3.14.0"
+  },
+  "persist": true
 }

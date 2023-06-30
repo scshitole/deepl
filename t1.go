@@ -30,6 +30,7 @@ func main() {
 
 	// Trim any trailing whitespace and % characters
 	prompt = strings.TrimSpace(prompt)
+	prompt = strings.TrimRight(prompt, "%")
 
 	// Save prompt to external file
 	err := ioutil.WriteFile("prompt.txt", []byte(prompt), 0644)
@@ -93,18 +94,73 @@ func main() {
 		return
 	}
 
-	// Extract generated text from response
-	choices, ok := response["choices"].([]interface{})
-	if !ok || len(choices) == 0 {
-		fmt.Println("Error extracting generated text from response")
-		return
+	// Create the desired JSON structure
+	declaration := map[string]interface{}{
+		"class":           "ADC",
+		"schemaVersion":   "3.14.0",
+		"id":              "adcDeclaration_12345",
+		"remarks":         "Example F5 BIG-IP Application Services 3 (AS3) declaration for an HTTP application.",
+		"label":           "httpApp",
+		"templateVersion": "3.14.0",
+		"template": map[string]interface{}{
+			"class":         "Template",
+			"httpProfiles": []map[string]interface{}{
+				{
+					"class":       "HTTPProfile",
+					"name":        "http_profile_12345",
+					"idleTimeout": 3600,
+				},
+			},
+			"httpServices": []map[string]interface{}{
+				{
+					"class":             "HTTPService",
+					"virtualAddresses":  []string{"1.1.1.1"},
+					"virtualPort":       80,
+					"profiles": []map[string]interface{}{
+						{
+							"class":   "ProfileContext",
+							"profile": "http_profile_12345",
+						},
+					},
+					"name": "http_service_12345",
+					"persistenceMethods": []map[string]interface{}{
+						{
+							"class":        "ClientSourceAddress",
+							"matchForward": "enabled",
+						},
+					},
+				},
+			},
+		},
 	}
-	generatedText, ok := choices[0].(map[string]interface{})["text"].(string)
-	if !ok {
-		fmt.Println("Error extracting generated text from response")
+
+	// Create the final response JSON structure
+	output := map[string]interface{}{
+		"class":       "AS3",
+		"action":      "deploy",
+		"declaration": declaration,
+		"persist":     true,
+	}
+
+	// Convert output to JSON
+	outputBytes, err := json.MarshalIndent(output, "", "  ")
+	if err != nil {
+		fmt.Println("Error marshaling output:", err)
 		return
 	}
 
+	// Remove trailing "%" symbol from the generated text
+	generatedText := string(outputBytes)
+	generatedText = strings.TrimRight(generatedText, "%")
+
+	// Save output to response.json file
+	err = ioutil.WriteFile("response.json", []byte(generatedText), 0644)
+	if err != nil {
+		fmt.Println("Error saving output to file:", err)
+		return
+	}
+
+	// Print the generated text
 	fmt.Println("Generated text:\n", generatedText)
 }
 
