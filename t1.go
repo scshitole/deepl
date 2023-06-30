@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -20,16 +22,25 @@ func main() {
 		return
 	}
 
-	// Read prompt from external file
-	prompt, err := ioutil.ReadFile("prompt.txt")
+	// Read prompt from keyboard input
+	fmt.Println("Enter the prompt:")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	prompt := scanner.Text()
+
+	// Trim any trailing whitespace and % characters
+	prompt = strings.TrimSpace(prompt)
+
+	// Save prompt to external file
+	err := ioutil.WriteFile("prompt.txt", []byte(prompt), 0644)
 	if err != nil {
-		fmt.Println("Error reading prompt file:", err)
+		fmt.Println("Error saving prompt to file:", err)
 		return
 	}
 
 	// Request payload
 	payload := map[string]interface{}{
-		"prompt":     string(prompt),
+		"prompt":     prompt,
 		"max_tokens": 3000,
 	}
 
@@ -94,6 +105,6 @@ func main() {
 		return
 	}
 
-	fmt.Println("Generated text:", generatedText)
+	fmt.Println("Generated text:\n", generatedText)
 }
 
