@@ -20,10 +20,17 @@ func main() {
 		return
 	}
 
+	// Read prompt from external file
+	prompt, err := ioutil.ReadFile("prompt.txt")
+	if err != nil {
+		fmt.Println("Error reading prompt file:", err)
+		return
+	}
+
 	// Request payload
 	payload := map[string]interface{}{
-		"prompt":     "Create F5 BIG-IP AS3 Json for HTTP configuration",
-		"max_tokens": 4000,
+		"prompt":     string(prompt),
+		"max_tokens": 3000,
 	}
 
 	// Convert payload to JSON
@@ -89,3 +96,4 @@ func main() {
 
 	fmt.Println("Generated text:", generatedText)
 }
+
