@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -135,6 +136,9 @@ func main() {
 	index = len(files) + 1
 	pcFilename := filepath.Join("pc", "pc"+strconv.Itoa(index)+".json")
 
+	// Remove whitespaces from pcFilename
+	pcFilename = strings.ReplaceAll(pcFilename, " ", "")
+
 	// Save prompt and completions to file
 	pcFile, err := os.Create(pcFilename)
 	if err != nil {
@@ -162,6 +166,9 @@ func main() {
 	}
 	index = len(files) + 1
 	complFilename := filepath.Join("compl", "compl"+strconv.Itoa(index)+".json")
+
+	// Remove whitespaces from complFilename
+	complFilename = strings.ReplaceAll(complFilename, " ", "")
 
 	// Save completions to file
 	err = ioutil.WriteFile(complFilename, []byte(generatedText), 0644)
