@@ -1,46 +1,6 @@
+ a little lamb
 
-
-{
-    "class": "AS3",
-    "action": "deploy",
-    "declaration": {
-        "class": "ADC",
-        "schemaVersion": "3.13.0",
-        "id": "http_app",
-        "label": "HTTP App",
-        "remark": "HTTP App Server Declaration for F5 BIG-IP AS3"
-        "HTTP": {
-            "class": "Service_HTTP",
-            "virtualAddresses": ["10.1.1.100"],
-            "pool": "http_pool_1",
-            "defaultsFrom": "http_default"
-        },
-        "pools": [
-            {
-                "class": "Pool",
-                "name": "http_pool_1",
-                "monitors": ["http"],
-                "loadBalancingMode": "roundRobin",
-                "members": [
-                    {
-                        "servicePort": 80,
-                        "serverAddresses": [
-                            "192.168.1.201",
-                            "192.168.1.202",
-                            "192.168.1.203"
-                        ]
-                    }
-                ]
-            }
-        ],
-        "monitor": [
-            {
-                "class": "Monitor",
-                "name": "http",
-                "interval": 20,
-                "timeout": 16,
-                "destination": "*:80"
-            }
-        ]
-    }
-}
+Merry had a little lamb,
+His fleece was white as snow,
+And everywhere that Merry went,
+The lamb was sure to go.
