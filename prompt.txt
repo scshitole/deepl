@@ -1,1 +1,1 @@
-create F5 BIG-IP AS3 JSON file for HTTP App
+create a simple F5 BIG-IP AS3 JSON for HTTP
