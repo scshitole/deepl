@@ -8,4 +8,9 @@
 {
   "prompt": "boy with girl",
   "completions": "\n\nBoy with girl relationships can take many forms, from friends, to romantic, to platonic and even competitive relationships. Different boys and girls may have different expectations and goals in these types of relationships, and it becomes important to talk openly and honestly about what each person wants to achieve. Open communication is important in a boy-girl relationship because it gives both people a chance to express themselves and express their feelings for each other. This way, if one person is feeling something differently than the other, they are both able to discuss it and work towards a solution that fits both parties."
+},
+
+{
+  "prompt": "Create F5 BIG-IP AS3 json for HTTP App",
+  "completions": "\n\n{\n   \"class\": \"ADC\",\n   \"schemaVersion\": \"3.14.0\",\n   \"id\": \"httpApp\",\n   \"label\": \"HTTP App\",\n   \"remark\": \"This is an example of an F5 BIG-IP AS3 declaration for an HTTP application\",\n   \"declaration\":{\n      \"class\": \"Tenant\",\n      \"HTTP\":{\n         \"class\": \"Application\",\n         \"template\": \"http\",\n         \"serviceMain\": {\n            \"class\": \"Service_HTTP\",\n            \"virtualAddresses\": [\n               \"208.0.1.0\"\n            ],\n            \"pool\": \"web_pool\"\n         }\n      }\n   }\n}"
 }
