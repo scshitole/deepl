@@ -1,1 +1,0 @@
-create F5 BIG-IP AS3 Json file for Https virtual server and pool member listening at 8080

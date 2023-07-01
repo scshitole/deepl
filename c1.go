@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -180,5 +181,28 @@ func main() {
 	// Print prompt and completions side by side
 	fmt.Println("Prompt:      ", prompt)
 	fmt.Println("Completions: ", generatedText)
+
+	// Ask user if they want to proceed with updating the GitHub repository
+	fmt.Print("Do you want to proceed with updating the GitHub repository? (yes/no): ")
+	scanner.Scan()
+	confirmation := scanner.Text()
+
+	if confirmation == "yes" {
+		// Run git commands: git add ., git commit, and git push
+		runGitCommand("add", ".")
+		runGitCommand("commit", "-m", "Added prompt and completion files")
+		runGitCommand("push")
+	}
+}
+
+// Helper function to run git commands
+func runGitCommand(args ...string) {
+	cmd := exec.Command("git", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Error running git command:", err)
+	}
 }
 
