@@ -1,0 +1,33 @@
+Prompt: Create Simple F5 BIG-IP AS3 Json for HTTP app
+
+Completions: 
+
+
+
+{
+    "class": "AS3",
+    "action": "deploy",
+    "persist": true,
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.14.0",
+        "id": "http_service", 
+        "label": "http_service", 
+        "remark": "Simple F5 BIG-IP AS3 deployment for an HTTP application",
+        "HTTP": {
+            "class": "Service_HTTP",
+            "virtualAddresses": [{ "name": "160.34. 55.202" }],
+            "virtualPort": 8080,
+            "defaultPool": "http_pool"
+        },
+        "Pools": {
+            "class": "Pool",
+            "http_pool": {
+                "members": [{
+                    "servicePort": 8080,
+                    "serverAddresses": [{ "name": "10.5.55.23" }]
+                }]
+            }
+        }
+    }
+}
