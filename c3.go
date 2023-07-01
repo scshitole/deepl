@@ -8,11 +8,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/exec"
-	"path/filepath"
-	"strconv"
-	"strings"
 )
+
+const pcFilename = "pc.json" // Name of the output JSON file
+
+type PromptCompletion struct {
+	Prompt      string `json:"prompt"`
+	Completions string `json:"completions"`
+}
 
 func main() {
 	// API endpoint URL
@@ -30,29 +33,6 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	prompt := scanner.Text()
-
-	// Create prompt directory if it doesn't exist
-	err := os.MkdirAll("prompt", 0755)
-	if err != nil {
-		fmt.Println("Error creating prompt directory:", err)
-		return
-	}
-
-	// Find the next available index for the prompt file
-	files, err := ioutil.ReadDir("prompt")
-	if err != nil {
-		fmt.Println("Error reading prompt directory:", err)
-		return
-	}
-	index := len(files) + 1
-	promptFilename := filepath.Join("prompt", "prompt"+strconv.Itoa(index)+".txt")
-
-	// Save prompt to file
-	err = ioutil.WriteFile(promptFilename, []byte(prompt), 0644)
-	if err != nil {
-		fmt.Println("Error saving prompt to file:", err)
-		return
-	}
 
 	// Request payload
 	payload := map[string]interface{}{
@@ -121,62 +101,65 @@ func main() {
 		return
 	}
 
-	// Create pc directory if it doesn't exist
-	err = os.MkdirAll("pc", 0755)
+	// Create prompt-completion object
+	pc := PromptCompletion{
+		Prompt:      prompt,
+		Completions: generatedText,
+	}
+
+	// Convert prompt-completion object to JSON with indentation
+	pcBytes, err := json.MarshalIndent(pc, "", "  ")
 	if err != nil {
-		fmt.Println("Error creating pc directory:", err)
+		fmt.Println("Error marshaling prompt-completion:", err)
 		return
 	}
 
-	// Find the next available index for the pc file
-	files, err = ioutil.ReadDir("pc")
+	// Create pc.json file if it doesn't exist
+	fileExists, err := fileExists(pcFilename)
 	if err != nil {
-		fmt.Println("Error reading pc directory:", err)
+		fmt.Println("Error checking if pc.json file exists:", err)
 		return
 	}
-	index = len(files) + 1
-	pcFilename := filepath.Join("pc", "pc"+strconv.Itoa(index)+".html")
-
-	// Remove whitespaces from pcFilename
-	pcFilename = strings.ReplaceAll(pcFilename, " ", "")
-
-	// Save prompt and completions to file
-	pcFile, err := os.Create(pcFilename)
-	if err != nil {
-		fmt.Println("Error creating pc file:", err)
-		return
+	if !fileExists {
+		err = ioutil.WriteFile(pcFilename, pcBytes, 0644)
+		if err != nil {
+			fmt.Println("Error creating pc.json file:", err)
+			return
+		}
+	} else {
+		// Append prompt-completion JSON to pc.json file with spacing
+		err = appendToFile(pcFilename, ",\n\n"+string(pcBytes))
+		if err != nil {
+			fmt.Println("Error appending to pc.json file:", err)
+			return
+		}
 	}
-	defer pcFile.Close()
-
-	// Write prompt and completions to the pc file
-	pcFile.WriteString("<html><body><h2>Prompt:</h2><p>" + prompt + "</p>")
-	pcFile.WriteString("<h2>Completions:</h2><p>" + generatedText + "</p></body></html>")
 
 	// Print prompt and completions side by side
 	fmt.Println("Prompt:      ", prompt)
 	fmt.Println("Completions: ", generatedText)
-
-	// Ask user if they want to proceed with updating the GitHub repository
-	fmt.Print("Do you want to proceed with updating the GitHub repository? (yes/no): ")
-	scanner.Scan()
-	confirmation := scanner.Text()
-
-	if confirmation == "yes" {
-		// Run git commands: git add ., git commit, and git push
-		runGitCommand("add", ".")
-		runGitCommand("commit", "-m", "Added prompt and completion files")
-		runGitCommand("push")
-	}
 }
 
-// Helper function to run git commands
-func runGitCommand(args ...string) {
-	cmd := exec.Command("git", args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	if err != nil {
-		fmt.Println("Error running git command:", err)
+// Check if a file exists
+func fileExists(filename string) (bool, error) {
+	_, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false, nil
 	}
+	return err == nil, err
+}
+
+// Append data to a file
+func appendToFile(filename, data string) error {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if _, err = f.WriteString(data); err != nil {
+		return err
+	}
+	return nil
 }
 
