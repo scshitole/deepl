@@ -1,0 +1,33 @@
+Prompt: Create F5 BIG-IP AS3 Json file for HTTP application with Virtual server and pool members listening on port 8080
+
+Completions: 
+
+{
+    "class": "AS3",
+    "action": "deploy",
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.17.0",
+        "id": "http_application",
+        "label": "HTTP Application",
+        "remark": "An HTTP Application example with a virtual server and pool members",
+        "VirtualServers": {
+            "http_vs": {
+                "class": "VirtualServer",
+                "virtualServer" : {
+                    "port": 8080
+                },
+                "pool": "http_pool"
+            }
+        },
+        "Pools": {
+            "http_pool": {
+                "class": "Pool",
+                "poolMembers": {
+                    "1.1.1.1:8080": { },
+                    "2.2.2.2:8080": { }
+                }
+            }
+        }
+    }
+}
