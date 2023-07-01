@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strconv"
 )
 
 func main() {
@@ -27,8 +29,24 @@ func main() {
 	scanner.Scan()
 	prompt := scanner.Text()
 
-	// Save prompt to external file
-	err := ioutil.WriteFile("prompt.txt", []byte(prompt), 0644)
+	// Create prompt directory if it doesn't exist
+	err := os.MkdirAll("prompt", 0755)
+	if err != nil {
+		fmt.Println("Error creating prompt directory:", err)
+		return
+	}
+
+	// Find the next available index for the prompt file
+	files, err := ioutil.ReadDir("prompt")
+	if err != nil {
+		fmt.Println("Error reading prompt directory:", err)
+		return
+	}
+	index := len(files) + 1
+	filename := filepath.Join("prompt", "prompt"+strconv.Itoa(index)+".txt")
+
+	// Save prompt to file
+	err = ioutil.WriteFile(filename, []byte(prompt), 0644)
 	if err != nil {
 		fmt.Println("Error saving prompt to file:", err)
 		return
@@ -102,5 +120,28 @@ func main() {
 	}
 
 	fmt.Println("Generated text:\n", generatedText)
+
+	// Create completions directory if it doesn't exist
+	err = os.MkdirAll("completions", 0755)
+	if err != nil {
+		fmt.Println("Error creating completions directory:", err)
+		return
+	}
+
+	// Find the next available index for the completions file
+	files, err = ioutil.ReadDir("completions")
+	if err != nil {
+		fmt.Println("Error reading completions directory:", err)
+		return
+	}
+	index = len(files) + 1
+	filename = filepath.Join("completions", "completions"+strconv.Itoa(index)+".json")
+
+	// Save generated text to file
+	err = ioutil.WriteFile(filename, []byte(generatedText), 0644)
+	if err != nil {
+		fmt.Println("Error saving generated text to file:", err)
+		return
+	}
 }
 
