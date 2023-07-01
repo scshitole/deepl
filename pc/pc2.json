@@ -1,0 +1,67 @@
+Prompt: Create F5 BIG-IP AS3 Json file for HTTP app which has virtual server, pool member and monitor
+
+Completions: 
+
+[
+    {
+        "class": "AS3",
+        "action": "deploy",
+        "declaration": 
+        {
+            "class": "ADC",
+            "schemaVersion":"3.17.0",
+            "id": "http://localhost",
+            "label": "http",
+            "Remark": "Created by AS3 Json for HTTP app",
+            "VirtualServers": 
+            [
+                {
+                    "class": "VirtualServer",
+                    "virtualServer": 
+                    {
+                        "name" : "HTTP VS",
+                        "address": "202.202.202.202",
+                        "port": 80
+                    },
+                    "pool": "Pool 1"
+                }
+            ],
+            "Pools": 
+            [
+                {
+                    "class": "Pool",
+                    "name" : "Pool 1"
+                }
+            ],
+            "poolMembers": 
+            [
+                {
+                    "class": "PoolMember",
+                    "poolName" : "Pool 1",
+                    "member": 
+                    [
+                        {
+                            "name" : "192.168.1.1",
+                            "port": 80
+                        },
+                        {
+                            "name" : "192.168.1.2",
+                            "port": 80
+                        }
+                    ]
+                }
+            ],
+            "MONitors": 
+            [
+                {
+                    "class": "MONitor",
+                    "name" : "http",
+                    "intervals": "20",
+                    "timeout": "5",
+                    "send": "GET /",
+                    "recv": "HTTP/1.1 200"
+                }
+            ]
+        }
+    }
+]
