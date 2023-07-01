@@ -135,7 +135,7 @@ func main() {
 		return
 	}
 	index = len(files) + 1
-	pcFilename := filepath.Join("pc", "pc"+strconv.Itoa(index)+".json")
+	pcFilename := filepath.Join("pc", "pc"+strconv.Itoa(index)+".html")
 
 	// Remove whitespaces from pcFilename
 	pcFilename = strings.ReplaceAll(pcFilename, " ", "")
@@ -149,34 +149,8 @@ func main() {
 	defer pcFile.Close()
 
 	// Write prompt and completions to the pc file
-	pcFile.WriteString("Prompt: " + prompt + "\n\n")
-	pcFile.WriteString("Completions: " + generatedText)
-
-	// Create compl directory if it doesn't exist
-	err = os.MkdirAll("compl", 0755)
-	if err != nil {
-		fmt.Println("Error creating compl directory:", err)
-		return
-	}
-
-	// Find the next available index for the compl file
-	files, err = ioutil.ReadDir("compl")
-	if err != nil {
-		fmt.Println("Error reading compl directory:", err)
-		return
-	}
-	index = len(files) + 1
-	complFilename := filepath.Join("compl", "compl"+strconv.Itoa(index)+".json")
-
-	// Remove whitespaces from complFilename
-	complFilename = strings.ReplaceAll(complFilename, " ", "")
-
-	// Save completions to file
-	err = ioutil.WriteFile(complFilename, []byte(generatedText), 0644)
-	if err != nil {
-		fmt.Println("Error saving completions to file:", err)
-		return
-	}
+	pcFile.WriteString("<html><body><h2>Prompt:</h2><p>" + prompt + "</p>")
+	pcFile.WriteString("<h2>Completions:</h2><p>" + generatedText + "</p></body></html>")
 
 	// Print prompt and completions side by side
 	fmt.Println("Prompt:      ", prompt)
