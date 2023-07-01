@@ -1,0 +1,47 @@
+
+
+{
+  "class": "AS3",
+  "declaration": {
+    "class": "ADC",
+    "schemaVersion": "3.13.0",
+    "id": "as3",
+    "action": "deploy",
+    "label": "HTTPS_Virtual_Server_and_Pool_Member_listening_at_8080",
+    "remark": "F5_AS3_Declaration_to_create_an_HTTPS_Virtual_Server_and_Pool_Member_listening_at_8080",
+    "Tenant": {
+      "class": "Tenant",
+      "Any_HTTPS_Virtual_Server": {
+        "class": "Application",
+        "template": "http",
+        "serviceMain": {
+          "class": "Service_HTTP",
+          "virtualAddresses": [
+            "10.10.10.10"
+          ],
+          "pool": "Any_HTTPS_Pool",
+          "sourceAddressTranslation": {
+            "type": "none"
+          },
+          "snat": {
+            "type": "automap"
+          },
+          "policy": "/Common/All_HTTP_HTTPS",
+          "virtualPort": 443
+        }
+      },
+      "Any_HTTPS_Pool": {
+        "class": "Pool",
+        "monitor": "http",
+        "members": [
+          {
+            "servicePort": 8080,
+            "serverAddresses": [
+              "10.10.20.20"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

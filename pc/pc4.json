@@ -1,0 +1,111 @@
+Prompt: Create F5 BIG-IP AS3 template with tenant and monotor
+
+Completions: 
+
+{
+  "class": "AS3",
+  "action": "deploy",
+  "persist": true,
+  "declaration": {
+    "class": "ADC",
+    "schemaVersion": "3.0.0",
+    "id": "urn:uuid:b46a585e-41e8-412b-892a-f4187f7dc1a9",
+    "label": "My AS3 Declaration",
+    "remark": "Example of AS3 Template creation",
+    "tenants": [
+      {
+        "class": "Tenant",
+        "classNamePrefix": "tenant_1",
+        "policyEndpoints": [
+          {
+            "class": "PolicyEndpoint",
+            "name": "policy-primary",
+            "addressFamily": "IP",
+            "fqdn": "policy.tenant_1.domain.local"
+          },
+          {
+            "class": "PolicyEndpoint",
+            "name": "policy-secondary",
+            "addressFamily": "IP",
+            "fqdn": "policy-secondary.tenant_1.domain.local"
+          }
+        ],
+        "servers": [
+          {
+            "class": "Server",
+            "address": "1.2.3.4",
+            "name": "my-server-1",
+            "port": "80"
+          },
+          {
+            "class": "Server",
+            "address": "1.2.3.5",
+            "serverName": "my-server-2",
+            "port": "80"
+          }
+        ],
+        "virtualServers": [
+          {
+            "class": "VirtualServer",
+            "name": "vs-primary",
+            "destination": "1.1.1.2:80",
+            "ipProtocol": "tcp",
+            "profiles": [
+              {
+                "class": "ProfileHTTP",
+                "context": "all",
+                "name": "proxy"
+              }
+            ],
+            "pool": "my-pool-1"
+          },
+          {
+            "class": "VirtualServer",
+            "name": "vs-secondary",
+            "destination": "1.1.1.3:80",
+            "ipProtocol": "tcp",
+            "profiles": [
+              {
+                "class": "ProfileHTTP",
+                "context": "all",
+                "name": "proxy"
+              }
+            ],
+            "pool": "my-pool-1"
+          }
+        ],
+        "pools": [
+          {
+            "class": "Pool",
+            "monitors": [
+              {
+                "class": "Monitor",
+                "severity": "emergency",
+                "name": "my-monitor",
+                "interval": 5,
+                "timeout": 16,
+                "mandatory": true,
+                "type": "http"
+              }
+            ],
+            "name": "my-pool-1",
+            "members": [
+              {
+                "class": "Member",
+                "name": "my-server-1",
+                "address": "1.2.3.4:80",
+                "state": false
+              },
+              {
+                "class": "Member",
+                "name": "my-sever-2",
+                "address": "1.2.3.5:80",
+                "state": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
