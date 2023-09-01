@@ -4,15 +4,6 @@
 
 This is a simple example program that demonstrates how to use the OpenAI GPT-3.5 Turbo API to generate text based on a given prompt. The program sends a request to the OpenAI API with a prompt text and receives a generated text in response.
 
-## How It Works
-
-1. The program reads the prompt text from an external file named `prompt.txt`. You can provide your desired prompt in the `prompt.txt` file.
-
-2. It sends a request to the OpenAI API using the GPT-3.5 Turbo model, providing the prompt text and a maximum number of tokens for the generated text.
-
-3. The API returns a response with the generated text based on the provided prompt.
-
-4. The program extracts the generated text from the response and prints it to the console.
 
 ## Prerequisites
 
@@ -20,6 +11,12 @@ Before running the program, make sure you have the following:
 
 - Go programming language installed
 - OpenAI API key (Sign up at https://openai.com to get an API key)
+
+## How it works?
+- When you run the code as ```run go c1.go``` it will prompt you for ChatGPT prompt ( background it will connect to GPT-3.5)	
+- Once you enter the prompt it will display the completions or reponse on the screen
+- It will record the ***prompt*** and ***completion*** and put the details under directory ```pc```
+- It will ask you if you want to upload the details github repo
 
 ## Getting Started
 
@@ -38,4 +35,4 @@ Create a file named prompt.txt and enter your desired prompt text.
 
 Run the program:
 
-go run main.go
+go run c1.go
